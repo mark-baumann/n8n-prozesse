@@ -1,0 +1,337 @@
+{
+  "name": "Bewerbungsprozess",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "dc1aaa60-fef9-4b04-a12c-a71a6b3bfa6c",
+              "leftValue": "={{ $json.output[0].content[0].text }}",
+              "rightValue": "Absage",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2576,
+        384
+      ],
+      "id": "db05bded-49f1-417a-9cfa-7a2e9f26d784",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "Ist das eine Absage oder Zusage?"
+            },
+            {
+              "content": "={{ $json.textPlain }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1936,
+        384
+      ],
+      "id": "ce6b00a6-9f82-410a-8c0c-a9c2a6447e6e",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jhyDZJEx6tuhqtjw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "value": "INBOX",
+          "mode": "list",
+          "cachedResultName": "INBOX"
+        },
+        "emailUid": "={{ $('Start').item.json.attributes_uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.Applications",
+          "mode": "list",
+          "cachedResultName": "INBOX.Applications"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        3136,
+        256
+      ],
+      "id": "08cd987f-3325-41a8-a9a9-be1369a65297",
+      "name": "MoveEmail email8",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5997721099",
+        "text": "=",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3376,
+        208
+      ],
+      "id": "e2e5f8ec-d386-4a19-8cd8-8b3a6eb2cc86",
+      "name": "Send a text message1",
+      "webhookId": "dc62a27d-4a0d-46db-922a-b7415065f553",
+      "credentials": {
+        "telegramApi": {
+          "id": "2vaPuxdHLd9FZQYU",
+          "name": "Telegram Application"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "value": "INBOX",
+          "mode": "list",
+          "cachedResultName": "INBOX"
+        },
+        "emailUid": "={{ $('Start').item.json.attributes_uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.Applications.Absagen",
+          "mode": "list",
+          "cachedResultName": "INBOX.Applications.Absagen"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        3056,
+        16
+      ],
+      "id": "48fce9c7-f37a-4cab-b6f2-30cb475e0d43",
+      "name": "MoveEmail email9",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "CCGeKS0TqhDBXcNV",
+          "mode": "list",
+          "cachedResultName": "absagen",
+          "cachedResultUrl": "/projects/H20kGkPwPOZcc2fu/datatables/CCGeKS0TqhDBXcNV"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $('Start').item.json.from }}",
+            "betreff": "={{ $('Start').item.json.subject }}",
+            "mailtext": "={{ $('Start').item.json.textPlain }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "mailtext",
+              "displayName": "mailtext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "betreff",
+              "displayName": "betreff",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "optimizeBulk": false
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3344,
+        -16
+      ],
+      "id": "1c1f5824-359c-4ff5-88e4-957e4d2da294",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "attributes_uid",
+              "type": "any"
+            },
+            {
+              "name": "from",
+              "type": "any"
+            },
+            {
+              "name": "subject",
+              "type": "any"
+            },
+            {
+              "name": "textPlain",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "id": "7a1f2e3b-b9c7-450c-b392-38f56139f448",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        1728,
+        384
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "MoveEmail email8": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "MoveEmail email9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MoveEmail email9": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "0c32a36a-2be2-43d8-ba03-597d00cac7dc",
+  "meta": {
+    "instanceId": "e05035d0af1fbe0c6bb77efc0b4665346429736027f5efc853dac3c80512fc3e"
+  },
+  "id": "6iQGLn3SKrspGk7K",
+  "tags": []
+}
