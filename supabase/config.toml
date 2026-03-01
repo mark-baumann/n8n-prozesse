@@ -1,0 +1,4 @@
+project_id = "qyxpzmmerbbfwoqkkzoz"
+
+[functions.generate-diagram]
+verify_jwt = false
