@@ -14,7 +14,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
   const [copied, setCopied] = useState(false);
   const [svgContent, setSvgContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(2);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   useEffect(() => {
     mermaid.initialize({
@@ -167,8 +167,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
       <TabsContent value="preview" className="mt-0">
         <div
           className={cn(
-            "diagram-preview rounded-lg border border-border p-8 min-h-[550px] overflow-auto",
-            "flex items-center justify-center bg-card",
+            "diagram-preview rounded-lg border border-border p-4 min-h-[550px] overflow-auto bg-card",
           )}
         >
           {error ? (
@@ -177,11 +176,13 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
               <p className="text-sm mt-2 opacity-75">{error}</p>
             </div>
           ) : (
-            <div
-              className="animate-fade-in [&_svg]:max-w-full [&_svg]:h-auto"
-              style={{ transform: `scale(${zoomLevel})`, transformOrigin: "center center" }}
-              dangerouslySetInnerHTML={{ __html: svgContent }}
-            />
+            <div className="w-max min-w-full min-h-full">
+              <div
+                className="animate-fade-in [&_svg]:block [&_svg]:h-auto [&_svg]:max-w-none"
+                style={{ transform: `scale(${zoomLevel})`, transformOrigin: "top left" }}
+                dangerouslySetInnerHTML={{ __html: svgContent }}
+              />
+            </div>
           )}
         </div>
       </TabsContent>
