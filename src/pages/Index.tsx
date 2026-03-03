@@ -39,33 +39,30 @@ const Index = () => {
           />
         </section>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Input Section */}
-          <section className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
-              2. Beschreibe den Prozess
-            </h3>
-            <div className="bg-card rounded-xl border border-border p-6">
-              <ProcessInput
-                value={description}
-                onChange={setDescription}
-                onGenerate={handleGenerate}
-                isLoading={isLoading}
-              />
-            </div>
-          </section>
+        {/* Input Section */}
+        <section className="animate-fade-in mb-8" style={{ animationDelay: "0.1s" }}>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+            2. Beschreibe den Prozess
+          </h3>
+          <div className="bg-card rounded-xl border border-border p-6">
+            <ProcessInput
+              value={description}
+              onChange={setDescription}
+              onGenerate={handleGenerate}
+              isLoading={isLoading}
+            />
+          </div>
+        </section>
 
-          {/* Preview Section */}
-          <section className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
-              3. Dein Diagramm
-            </h3>
-            <div className="bg-card rounded-xl border border-border p-6">
-              <MermaidPreview code={mermaidCode} />
-            </div>
-          </section>
-        </div>
+        {/* Preview Section */}
+        <section className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+            3. Dein Diagramm
+          </h3>
+          <div className="bg-card rounded-xl border border-border p-6 lg:p-8">
+            <MermaidPreview code={mermaidCode} />
+          </div>
+        </section>
 
         {/* Features Info */}
         <section className="mt-16 text-center animate-fade-in" style={{ animationDelay: "0.3s" }}>

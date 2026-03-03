@@ -23,7 +23,7 @@ Beispiel für Sequenzdiagramm:
 'Der Client sendet eine Anfrage an den Server. Der Server fragt die Datenbank ab und gibt das Ergebnis an den Client zurück.'"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="min-h-[200px] font-mono text-sm resize-none bg-card border-border focus:border-primary focus:ring-primary/20"
+          className="min-h-[200px] font-mono text-sm resize-none bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
         />
       </div>
       
