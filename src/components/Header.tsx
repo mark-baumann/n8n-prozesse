@@ -9,7 +9,7 @@ export function Header() {
             <Workflow className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">DiagramFlow</h1>
+            <h1 className="text-xl font-bold text-foreground">ProzessPilot</h1>
             <p className="text-xs text-muted-foreground">Text → Diagramm mit KI</p>
           </div>
         </div>
