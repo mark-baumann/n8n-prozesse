@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import mermaid from "mermaid";
-import { Copy, Check, Code, Image, Download, ZoomIn, ZoomOut } from "lucide-react";
+import { Code, Image, Download, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,6 @@ interface MermaidPreviewProps {
 }
 
 export function MermaidPreview({ code }: MermaidPreviewProps) {
-  const [copied, setCopied] = useState(false);
   const [svgContent, setSvgContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -68,13 +67,6 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
     renderDiagram();
   }, [code]);
 
-  const handleCopyCode = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    toast.success("Code kopiert!");
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const handleDownloadSvg = () => {
     if (!svgContent) return;
 
@@ -109,7 +101,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
 
   return (
     <Tabs defaultValue="preview" className="w-full">
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <TabsList className="bg-muted">
           <TabsTrigger value="preview" className="gap-2 text-foreground data-[state=active]:text-foreground">
             <Image className="w-4 h-4" />
@@ -121,7 +113,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
           </TabsTrigger>
         </TabsList>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 sm:justify-end">
           <Button
             variant="outline"
             size="sm"
@@ -129,7 +121,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
             className="gap-2 text-foreground"
             disabled={zoomLevel <= 0.5}
           >
-            <ZoomOut className="w-4 h-4" />
+            <RotateCw className="w-4 h-4 rotate-180" />
             Zoom out
           </Button>
           <Button
@@ -139,17 +131,8 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
             className="gap-2 text-foreground"
             disabled={zoomLevel >= 4}
           >
-            <ZoomIn className="w-4 h-4" />
+            <RotateCw className="w-4 h-4" />
             Zoom in
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleCopyCode}
-            className="gap-2 text-foreground"
-          >
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            {copied ? "Kopiert!" : "Code kopieren"}
           </Button>
           <Button
             variant="outline"
@@ -167,7 +150,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
       <TabsContent value="preview" className="mt-0">
         <div
           className={cn(
-            "diagram-preview rounded-lg border border-border p-4 min-h-[550px] overflow-auto bg-card",
+            "diagram-preview rounded-lg border border-border bg-card p-2 sm:p-4 min-h-[320px] sm:min-h-[550px] overflow-auto",
           )}
         >
           {error ? (
@@ -176,10 +159,10 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
               <p className="text-sm mt-2 opacity-75">{error}</p>
             </div>
           ) : (
-            <div className="w-max min-w-full min-h-full">
+            <div className="min-w-full min-h-full">
               <div
-                className="animate-fade-in [&_svg]:block [&_svg]:h-auto [&_svg]:max-w-none"
-                style={{ transform: `scale(${zoomLevel})`, transformOrigin: "top left" }}
+                className="animate-fade-in [&_svg]:block [&_svg]:h-auto [&_svg]:w-full [&_svg]:max-w-full sm:[&_svg]:max-w-none"
+                style={{ transform: `scale(${zoomLevel})`, transformOrigin: "top center" }}
                 dangerouslySetInnerHTML={{ __html: svgContent }}
               />
             </div>

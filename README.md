@@ -7,13 +7,11 @@ Eine React/Vite-Webanwendung zur KI-gestützten Generierung von Mermaid-Diagramm
 - Diagramm-Generierung aus natürlicher Sprache
 - Diagrammtypen:
   - Flowchart / BPMN
-  - **n8n Workflow (mit n8n-typischen Nodes und visueller Klassifizierung)**
   - Sequenzdiagramm
   - Klassendiagramm
   - Aktivitätsdiagramm
   - ER-Diagramm
 - Live-Vorschau mit Zoom
-- Mermaid-Code kopieren
 - SVG-Export
 
 ## Lokale Entwicklung
