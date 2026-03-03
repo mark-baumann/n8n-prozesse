@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import mermaid from "mermaid";
-import { Copy, Check, Code, Image, Download } from "lucide-react";
+import { Copy, Check, Code, Image, Download, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
   const [copied, setCopied] = useState(false);
   const [svgContent, setSvgContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(2);
 
   useEffect(() => {
     mermaid.initialize({
@@ -87,6 +88,14 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
     toast.success("SVG heruntergeladen!");
   };
 
+  const handleZoomIn = () => {
+    setZoomLevel((current) => Math.min(current + 0.25, 4));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel((current) => Math.max(current - 0.25, 0.5));
+  };
+
   if (!code) {
     return (
       <div className="flex items-center justify-center h-[550px] diagram-preview rounded-lg border border-dashed border-border">
@@ -113,6 +122,26 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
         </TabsList>
 
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleZoomOut}
+            className="gap-2 text-foreground"
+            disabled={zoomLevel <= 0.5}
+          >
+            <ZoomOut className="w-4 h-4" />
+            Zoom out
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleZoomIn}
+            className="gap-2 text-foreground"
+            disabled={zoomLevel >= 4}
+          >
+            <ZoomIn className="w-4 h-4" />
+            Zoom in
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -150,6 +179,7 @@ export function MermaidPreview({ code }: MermaidPreviewProps) {
           ) : (
             <div
               className="animate-fade-in [&_svg]:max-w-full [&_svg]:h-auto"
+              style={{ transform: `scale(${zoomLevel})`, transformOrigin: "center center" }}
               dangerouslySetInnerHTML={{ __html: svgContent }}
             />
           )}
