@@ -82,6 +82,9 @@ serve(async (req) => {
     }
 
     const systemPrompt = DIAGRAM_TYPE_PROMPTS[diagramType] || DIAGRAM_TYPE_PROMPTS.flowchart;
+    const cleanedDescription = description
+      .replace(/mit\s+n8n[-\s]*workflow\s+erstellen[:\-\s]*/gi, "")
+      .trim();
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -93,7 +96,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: description },
+          { role: "user", content: cleanedDescription || description },
         ],
         stream: false,
       }),

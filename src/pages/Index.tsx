@@ -59,7 +59,7 @@ const Index = () => {
           <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
             3. Dein Diagramm
           </h3>
-          <div className="bg-card rounded-xl border border-border p-6 lg:p-8">
+          <div className="bg-card rounded-xl border border-border p-3 sm:p-6 lg:p-8">
             <MermaidPreview code={mermaidCode} />
           </div>
         </section>
@@ -80,9 +80,9 @@ const Index = () => {
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">📊</span>
               </div>
-              <h4 className="font-semibold mb-2">6 Diagrammtypen</h4>
+              <h4 className="font-semibold mb-2">5 Diagrammtypen</h4>
               <p className="text-sm text-muted-foreground">
-                Flowchart/BPMN, n8n, Sequenz-, Klassen-, Aktivitäts- & ER-Diagramme
+                Flowchart/BPMN, Sequenz-, Klassen-, Aktivitäts- & ER-Diagramme
               </p>
             </div>
             <div className="p-6 rounded-xl bg-card border border-border">
@@ -91,7 +91,7 @@ const Index = () => {
               </div>
               <h4 className="font-semibold mb-2">Export</h4>
               <p className="text-sm text-muted-foreground">
-                Code kopieren oder als SVG herunterladen
+                Mermaid-Code ansehen oder als SVG herunterladen
               </p>
             </div>
           </div>

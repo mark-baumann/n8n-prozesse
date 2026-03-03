@@ -5,10 +5,9 @@ import {
   Box, 
   Activity, 
   Database,
-  Workflow,
 } from "lucide-react";
 
-export type DiagramType = "flowchart" | "n8n" | "sequence" | "class" | "activity" | "er";
+export type DiagramType = "flowchart" | "sequence" | "class" | "activity" | "er";
 
 interface DiagramTypeSelectorProps {
   selected: DiagramType;
@@ -21,12 +20,6 @@ const diagramTypes: { type: DiagramType; label: string; description: string; ico
     label: "Flowchart / BPMN", 
     description: "Prozessabläufe & Entscheidungen",
     icon: GitBranch 
-  },
-  {
-    type: "n8n",
-    label: "n8n Workflow",
-    description: "n8n-Knoten & Automationen",
-    icon: Workflow,
   },
   { 
     type: "sequence", 
@@ -56,7 +49,7 @@ const diagramTypes: { type: DiagramType; label: string; description: string; ico
 
 export function DiagramTypeSelector({ selected, onSelect }: DiagramTypeSelectorProps) {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
       {diagramTypes.map(({ type, label, description, icon: Icon }) => (
         <button
           key={type}
