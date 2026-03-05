@@ -1,0 +1,46 @@
+{
+  "name": "Entwurf Erstellen",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "mailtext"
+            },
+            {
+              "name": "To"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "9e17f02c-8346-4bce-8f83-8561e33531fa",
+  "meta": {
+    "instanceId": "e05035d0af1fbe0c6bb77efc0b4665346429736027f5efc853dac3c80512fc3e"
+  },
+  "id": "mo08T6QQM19NKX2Q",
+  "tags": []
+}

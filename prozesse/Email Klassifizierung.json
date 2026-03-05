@@ -1,0 +1,700 @@
+{
+  "name": "Email Klassifizierung",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4a787b49-a3a4-43b9-90a4-dc590ad4882b",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        -2096,
+        640
+      ],
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=You are an email classification system.\n\nClassify the email into ONE of the provided categories.\nOnly choose exactly one category name.\n\nImportant rules:\n- If the email contains a verification code or login confirmation → Auth Code\n- If it is advertising, newsletter or promotional content → Marketing Mail\n- If it contains invoices, payment info or financial data → Finanzen Mail\n- If it relates to job applications or recruiting → Job Application\n- If none match clearly → Sonstiges\n\nEmail Subject:\n{{ $json.subject }}\n\nEmail Body:\n{{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "job_application",
+              "description": "E-Mails, die sich auf Bewerbungen, Stellenangebote oder berufliche Kontakte beziehen. Dazu gehören Bewerbungen, Lebensläufe, Anschreiben, Rückmeldungen von Recruitern, Interview-Einladungen, Absagen, Vertragsangebote, Jobportale, Headhunter oder Personalabteilungen. Typische Inhalte: Bewerbung, Lebenslauf, Interview, Stelle, Position, Karriere, Recruiter, HR, Vertrag, Angebot."
+            },
+            {
+              "category": "auth_code",
+              "description": "E-Mails, die einmalige Sicherheitscodes oder Bestätigungen enthalten. Dazu gehören Login-Codes, Zwei-Faktor-Authentifizierung (2FA), Einmalpasswörter (OTP), Verifizierungslinks, Sicherheitswarnungen, Passwort-Resets oder Gerätebestätigungen. Typische Inhalte: Code, Sicherheitscode, Bestätigungscode, Einmalcode, Login, Verifizierung, Passwort zurücksetzen, 2FA."
+            },
+            {
+              "category": "marketing",
+              "description": "Werbliche oder marketingbezogene E-Mails. Dazu gehören Newsletter, Angebote, Rabatte, Aktionen, Produktwerbung, Events, Updates von Shops oder Services, Promo-Mails und Mailinglisten. Typische Inhalte: Angebot, Rabatt, Sale, Newsletter, Aktion, jetzt kaufen, Werbung, Promotion, Gutschein."
+            },
+            {
+              "category": "finance",
+              "description": "E-Mails, die sich auf Geldtransaktionen, offizielle Dokumente, Verträge oder finanzielle Verpflichtungen beziehen. Dazu gehören Rechnungen, Quittungen, Bankauszüge, Mahnungen, Steuerunterlagen, Gehaltsabrechnungen, Versicherungsdokumente, Informationen zu Krediten oder Depot-Updates.  Typische Inhalte: Rechnung, Betrag, Zahlung, Überweisung, Bank, Konto, Steuer, Mahnung, Gehalt, Versicherung, Investment, Transaktion, Saldo."
+            },
+            {
+              "category": "orders",
+              "description": "E-Mails, die den Kaufprozess und die Logistik von physischen oder digitalen Waren betreffen. Dazu gehören Kaufbestätigungen, Versandbenachrichtigungen, Sendungsverfolgung, Lieferankündigungen, Retouren-Bestätigungen oder Stornierungen.  Typische Inhalte: Bestellung, Versand, Paket, Sendungsverfolgung, Lieferung, Lieferstatus, Retoure, Einkauf, Warenkorb, Track & Trace."
+            },
+            {
+              "category": "spam",
+              "description": "Spam / Unerwünscht E-Mails, die unerwünscht, betrügerisch oder schädlich sind. Dazu gehören Phishing-Versuche, unrealistische Gewinnversprechen, Scam-Angebote (z. B. Krypto, Casino), gefälschte Sicherheitswarnungen oder Massenmails von Absendern, die nie autorisiert wurden.  Typische Inhalte: Gewinn, Million, Erbe, Krypto, Casino, Scam, Viagra, dringend handeln, Konto gesperrt, Geschenk, Bitcoin, exklusives Angebot (unverlangt)."
+            },
+            {
+              "category": "sonstiges",
+              "description": "E-Mails, die keiner der anderen Kategorien eindeutig zugeordnet werden können."
+            }
+          ]
+        },
+        "options": {
+          "enableAutoFixing": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -1824,
+        592
+      ],
+      "id": "121a6164-c10a-430a-b6e4-209e5d2d8bf6",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2176,
+        976
+      ],
+      "id": "12a8572a-88bc-4c2a-88cc-b3f3c88cb742",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jhyDZJEx6tuhqtjw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "value": "INBOX",
+          "mode": "list",
+          "cachedResultName": "INBOX"
+        },
+        "emailUid": "={{ $json.attributes.uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.AuthCode",
+          "mode": "list",
+          "cachedResultName": "INBOX.AuthCode"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        272
+      ],
+      "id": "17b2b983-879f-4e26-90ff-8c4eab351220",
+      "name": "MoveEmail email",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "value": "INBOX",
+          "mode": "list",
+          "cachedResultName": "INBOX"
+        },
+        "emailUid": "={{ $json.attributes.uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.Marketing",
+          "mode": "list",
+          "cachedResultName": "INBOX.Marketing"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        592
+      ],
+      "id": "1db01c45-e2da-4cb3-9eab-beaa63566f6a",
+      "name": "MoveEmail email1",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "mode": "list",
+          "value": "INBOX"
+        },
+        "emailUid": "={{ $json.attributes.uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.Finance",
+          "mode": "list",
+          "cachedResultName": "INBOX.Finance"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        384
+      ],
+      "id": "d8c3cd2e-8c3c-41b9-be64-a606a1db054f",
+      "name": "MoveEmail email3",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "mode": "list",
+          "value": "INBOX"
+        },
+        "emailUid": "={{ $json.attributes.uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.Orders",
+          "mode": "list",
+          "cachedResultName": "INBOX.Orders"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        784
+      ],
+      "id": "cb0eaa05-e2a5-4455-b9b3-a44d8687b971",
+      "name": "MoveEmail email4",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "mode": "list",
+          "value": "INBOX"
+        },
+        "emailUid": "={{ $json.attributes.uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX.Spam",
+          "mode": "list",
+          "cachedResultName": "INBOX.Spam"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        944
+      ],
+      "id": "ee19b6ec-a0be-422d-92d2-5099eda6e732",
+      "name": "MoveEmail email6",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "coreImapAccount",
+        "resource": "email",
+        "operation": "moveEmail",
+        "sourceMailbox": {
+          "__rl": true,
+          "mode": "list",
+          "value": "INBOX"
+        },
+        "emailUid": "={{ $json.attributes.uid }}",
+        "destinationMailbox": {
+          "__rl": true,
+          "value": "INBOX",
+          "mode": "list",
+          "cachedResultName": "INBOX"
+        }
+      },
+      "type": "n8n-nodes-imap.imap",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        1216
+      ],
+      "id": "c85bfcc7-bf10-42de-a43c-f7db075d1365",
+      "name": "MoveEmail email7",
+      "credentials": {
+        "imap": {
+          "id": "LnRr8b0LZiiaXs70",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ylSCL6QQH8nAIzbr",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ylSCL6QQH8nAIzbr",
+          "cachedResultName": "Bewerbungsprozess"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "subject": "={{ $json.subject }}",
+            "textPlain": "={{ $json.textPlain }}",
+            "attributes_uid": "={{ $json.attributes.uid }}",
+            "from": "={{ $json.from }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "attributes_uid",
+              "displayName": "attributes_uid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "textPlain",
+              "displayName": "textPlain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -1504,
+        128
+      ],
+      "id": "59dcb168-4a88-4e88-92f5-cc8dee7a0d5e",
+      "name": "Call 'Bewerbungsprozess'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mo08T6QQM19NKX2Q",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/mo08T6QQM19NKX2Q",
+          "cachedResultName": "Entwurf Erstellen"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "mailtext",
+              "displayName": "mailtext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        1200
+      ],
+      "id": "1cd549fd-f761-4e95-8ba4-bd887d40a7f3",
+      "name": "Call 'Entwurf Erstellen'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mo08T6QQM19NKX2Q",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/mo08T6QQM19NKX2Q",
+          "cachedResultName": "Entwurf Erstellen"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "mailtext",
+              "displayName": "mailtext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        384
+      ],
+      "id": "676ba234-4952-408a-8663-035f44fa916f",
+      "name": "Call 'Bewerbungsprozess'1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mo08T6QQM19NKX2Q",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/mo08T6QQM19NKX2Q",
+          "cachedResultName": "Entwurf Erstellen"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "mailtext",
+              "displayName": "mailtext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        768
+      ],
+      "id": "4a7b7f3f-402c-4478-89fd-eb105262beeb",
+      "name": "Call 'Bewerbungsprozess'2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mo08T6QQM19NKX2Q",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/mo08T6QQM19NKX2Q",
+          "cachedResultName": "Entwurf Erstellen"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "mailtext",
+              "displayName": "mailtext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        560
+      ],
+      "id": "31e047db-3bed-49fa-9e5f-85c805479958",
+      "name": "Call 'Bewerbungsprozess'3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Call 'Bewerbungsprozess'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoveEmail email7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MoveEmail email": {
+      "main": [
+        []
+      ]
+    },
+    "MoveEmail email7": {
+      "main": [
+        [
+          {
+            "node": "Call 'Entwurf Erstellen'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MoveEmail email6": {
+      "main": [
+        []
+      ]
+    },
+    "MoveEmail email3": {
+      "main": [
+        [
+          {
+            "node": "Call 'Bewerbungsprozess'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MoveEmail email4": {
+      "main": [
+        [
+          {
+            "node": "Call 'Bewerbungsprozess'2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MoveEmail email1": {
+      "main": [
+        [
+          {
+            "node": "Call 'Bewerbungsprozess'3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "389a7f9b-784e-41ec-9b7f-ff040cd8933b",
+  "meta": {
+    "instanceId": "e05035d0af1fbe0c6bb77efc0b4665346429736027f5efc853dac3c80512fc3e"
+  },
+  "id": "epAM71qvrJ5od4TF",
+  "tags": []
+}
